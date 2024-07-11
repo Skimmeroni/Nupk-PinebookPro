@@ -1,0 +1,28 @@
+#!/bin/sh -e
+
+tar -xf mesa-$VERSION.tar.xz
+cd mesa-$VERSION
+
+meson setup \
+	-Dprefix=/usr \
+	-Dsysconfdir=/etc \
+	-Dmandir=/usr/share/man \
+	-Dlocalstatedir=/var \
+	-Dbuildtype=release \
+	-Ddefault_library=both \
+	-Dplatforms=wayland \
+	-Dglx=disabled \
+	-Degl=enabled \
+	-Dgles1=enabled \
+	-Dgles2=enabled \
+	-Degl-native-platform=wayland \
+	-Dvalgrind=disabled \
+	-Dzstd=disabled \
+	-Dglvnd=enabled \
+	-Dvulkan-drivers= \
+	-Dgallium-drivers=panfrost \
+	-Dllvm=disabled \
+	build
+
+meson -C build compile
+meson -C build install -d "$DESTDIR"
