@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+export DEPENDENCIES="linux-headers meson pkgconf python"
+export INFO="X.Org libdrm library"
+export PRETTY_NAME="libdrm"
+export SOURCES="https://dri.freedesktop.org/libdrm/libdrm-$VERSION.tar.xz"
+export VERSION="2"
+export VERSION="4"
+export VERSION="120"
+export VERSION="$MAJOR.$MINOR.$PATCH"

@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+export DEPENDENCIES="bison expat flex libdrm libglvnd libudev-zero linux-headers m4 meson pkgconf mako wayland wayland-protocols zlib"
+export INFO="OpenGL-like graphic library for Linux"
+export PRETTY_NAME="mesa"
+export SOURCES="https://archive.mesa3d.org/mesa-$VERSION.tar.xz"
+export MAJOR="23"
+export MINOR="1"
+export PATCH="1"
+export VERSION="$MAJOR.$MINOR.$PATCH"
