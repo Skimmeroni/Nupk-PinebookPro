@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-tar -xf mesa-$VERSION.tar.xz
+xz -cd mesa-$VERSION.tar.xz | tar -x
 cd mesa-$VERSION
 
 meson setup \
