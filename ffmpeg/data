@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+export DEPENDENCIES="alsa-lib dav1d libdrm lame libogg libvpx libvorbis opus x264 x265"
+export INFO=""
+export PRETTY_NAME="ffmpeg"
+export SOURCES="https://ffmpeg.org/releases/ffmpeg-$VERSION.tar.xz"
+export SOURCES="$SOURCES https://dev.gentoo.org/~chewi/distfiles/ffmpeg-rpi-$VERSION.patch"
+export MAJOR="6"
+export MINOR="1"
+export VERSION="$MAJOR.$MINOR"

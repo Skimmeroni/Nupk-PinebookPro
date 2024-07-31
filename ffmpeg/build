@@ -1,0 +1,47 @@
+#!/bin/sh -e
+
+xz -cd ffmpeg-$VERSION.tar.xz | tar -x
+cd ffmpeg-$VERSION
+
+patch -p1 < ../ffmpeg-rpi-$VERSION.patch
+
+./configure \
+	--prefix=/usr \
+	--disable-bzlib \
+	--disable-debug \
+	--disable-libass \
+	--disable-libwebp \
+	--disable-libxcb \
+	--disable-libxcb-shm \
+	--disable-libxcb-xfixes \
+	--disable-libxcb-shape \
+	--disable-libxml2 \
+	--disable-libxvid \
+	--disable-lzma \
+	--disable-network \
+	--disable-nonfree \
+	--disable-openssl \
+	--disable-xlib \
+	--disable-zlib \
+	--enable-alsa \
+	--enable-gpl \
+	--enable-libdrm \
+	--enable-libmp3lame \
+	--enable-libopus \
+	--enable-libvpx \
+	--enable-libvorbis \
+	--enable-sdl2 \
+	--enable-shared \
+	--enable-stripping \
+	--enable-libx264 \
+	--enable-libx265
+
+make
+make install-strip
+
+rm -rf "$DESTDIR/usr/share/ffmpeg/examples"
+
+su
+chown -R root:root $DESTDIR
+tar -c $DESTDIR/* | gzip2 > ffmpeg@$VERSION.tar.gz
+exit
