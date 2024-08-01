@@ -1,0 +1,26 @@
+#!/bin/sh -e
+
+# Build a barebone initramfs
+for directory in bin dev etc lib mnt proc sys
+do
+	mkdir -p initramfs/$directory
+done
+
+# Copy needed block devices
+cp -a /dev/mmcblk* initramfs/dev
+cp -a /dev/tty     initramfs/dev
+cp -a /dev/null    initramfs/dev
+cp -a /dev/console initramfs/dev
+
+# Copy some goodies
+cp /usr/bin/mount.static 	initramfs/bin/mount
+cp /usr/bin/umount.static 	initramfs/bin/umount
+cp /usr/bin/switch_root 	initramfs/bin/switch_root
+cp /usr/bin/sleep 		initramfs/bin/sleep
+cp /usr/bin/oksh 		initramfs/bin/sh
+
+# Apply device-specific patches
+for p in *.patch
+do
+	patch -p1 < "$p" 
+done
