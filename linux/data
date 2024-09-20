@@ -1,10 +1,14 @@
 #!/bin/sh -e
 
-export DEPENDENCIES="bc bison dtc findutils flex ncurses perl u-boot-tools util-linux"
+export DEPENDENCIES="bc bison dtc findutils flex ncurses perl util-linux"
 export INFO="The Linux kernel"
 export PRETTY_NAME="linux"
 export SOURCES="https://mirrors.edge.kernel.org/pub/linux/kernel/v$MAJOR.x/linux-$VERSION.tar.xz"
+export SOURCES="$SOURCES https://github.com/Caesar-github/rkwifibt.git"
+export SOURCES="$SOURCES https://gitlab.manjaro.org/manjaro-arm/packages/community/ap6256-firmware.git"
+export SOURCES="$SOURCES https://github.com/void-linux/void-packages.git"
+export SOURCES="$SOURCES files/pinebook-pro-config"
 export MAJOR="6"
-export MINOR="9"
-export PATCH="4"
+export MINOR="1"
+export PATCH="9"
 export VERSION="$MAJOR.$MINOR.$PATCH"

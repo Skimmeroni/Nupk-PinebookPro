@@ -1,26 +1,27 @@
 #!/bin/sh -e
 
-# Build a barebone initramfs
-for directory in bin dev etc lib mnt proc sys
-do
-	mkdir -p initramfs/$directory
-done
-
-# Copy needed block devices
-cp -a /dev/mmcblk* initramfs/dev
-cp -a /dev/tty     initramfs/dev
-cp -a /dev/null    initramfs/dev
-cp -a /dev/console initramfs/dev
-
-# Copy some goodies
-cp /usr/bin/mount.static 	initramfs/bin/mount
-cp /usr/bin/umount.static 	initramfs/bin/umount
-cp /usr/bin/switch_root 	initramfs/bin/switch_root
-cp /usr/bin/sleep 		initramfs/bin/sleep
-cp /usr/bin/oksh 		initramfs/bin/sh
+xz -cd linux-$VERSION.tar.xz | tar -x
 
 # Apply device-specific patches
-for p in *.patch
+for p in ../void-packages/srcpkgs/pinebookpro-kernel/patches/*.patch
 do
-	patch -p1 < "$p" 
+	patch -p1 < ../void-packages/srcpkgs/pinebookpro-kernel/patches/$p 
 done
+
+install -Dm644 ap6256-firmware.git/brcmfmac43456-sdio.clm_blob "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.clm_blob"
+
+install -Dm644 rkwifibt.git/firmware/broadcom/AP6256/bt/BCM4345C5.hcd "$DESTDIR/usr/lib/firmware/brcm/BCM4345C5.hcd"
+install -Dm644 rkwifibt.git/firmware/broadcom/AP6256/wifi/fw_bcm43456c5_ag.bin "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.bin"
+install -Dm644 rkwifibt.git/firmware/broadcom/AP6256/wifi/nvram_ap6256.txt "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
+sed -i 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
+ln -sf brcmfmac43456-sdio.txt "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.pinebook-pro.txt"
+
+mv ../pinebook-pro-config config
+
+make oldconfig
+make Image
+make dtbs
+make dtbs_install INSTALL_DTBS_PATH="$DESTDIR/boot/dtbs"
+cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
+
+install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
