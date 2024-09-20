@@ -25,3 +25,8 @@ make dtbs_install INSTALL_DTBS_PATH="$DESTDIR/boot/dtbs"
 cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
 
 install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
+
+su
+chown -R root:root $DESTDIR
+tar -c $DESTDIR/* | gzip2 > linux@$VERSION.tar.gz
+exit
