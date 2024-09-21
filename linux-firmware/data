@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+export DEPENDENCIES=""
+export INFO=""
+export PRETTY_NAME="linux-firmware"
+export SOURCES="$SOURCES https://github.com/Caesar-github/rkwifibt.git"
+export SOURCES="$SOURCES https://gitlab.manjaro.org/manjaro-arm/packages/community/ap6256-firmware.git"
+export VERSION="git"

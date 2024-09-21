@@ -8,14 +8,6 @@ do
 	patch -p1 < ../void-packages/srcpkgs/pinebookpro-kernel/patches/$p 
 done
 
-install -Dm644 ap6256-firmware.git/brcmfmac43456-sdio.clm_blob "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.clm_blob"
-
-install -Dm644 rkwifibt.git/firmware/broadcom/AP6256/bt/BCM4345C5.hcd "$DESTDIR/usr/lib/firmware/brcm/BCM4345C5.hcd"
-install -Dm644 rkwifibt.git/firmware/broadcom/AP6256/wifi/fw_bcm43456c5_ag.bin "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.bin"
-install -Dm644 rkwifibt.git/firmware/broadcom/AP6256/wifi/nvram_ap6256.txt "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
-sed -i 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
-ln -sf brcmfmac43456-sdio.txt "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.pinebook-pro.txt"
-
 mv ../pinebook-pro-config config
 
 make oldconfig
