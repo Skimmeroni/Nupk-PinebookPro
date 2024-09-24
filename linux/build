@@ -14,6 +14,10 @@ make oldconfig
 make Image
 make dtbs
 make dtbs_install INSTALL_DTBS_PATH="$DESTDIR/boot/dtbs"
+if [ ! -z grep -w 'CONFIG_MODULES=y' .config ]
+then
+	make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR modules_install
+fi
 cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
 
 install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
