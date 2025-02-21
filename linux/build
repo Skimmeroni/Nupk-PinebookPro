@@ -1,23 +1,16 @@
 #!/bin/sh -e
 
 xz -cd linux-$VERSION.tar.xz | tar -x
+cd linux-$VERSION
 
-# Apply device-specific patches
-for p in ../void-packages/srcpkgs/pinebookpro-kernel/patches/*.patch
-do
-	patch -p1 < ../void-packages/srcpkgs/pinebookpro-kernel/patches/$p 
-done
-
-mv ../pinebook-pro-config config
+mv ../pinebook-pro-config .config
 
 make oldconfig
 make Image
 make dtbs
+
 make dtbs_install INSTALL_DTBS_PATH="$DESTDIR/boot/dtbs"
-if [ ! -z grep -w 'CONFIG_MODULES=y' .config ]
-then
-	make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR modules_install
-fi
+# make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR modules_install
 cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
 
 install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
