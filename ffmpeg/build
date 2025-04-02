@@ -1,5 +1,17 @@
 #!/bin/sh -e
 
+PRETTY_NAME=ffmpeg
+MAJOR=6
+MINOR=1
+PATCH=
+VERSION=6.1
+
+mkdir temporary-builddir
+DESTDIR=temporary-builddir
+
+curl --location --remote-name --skip-existing https://dev.gentoo.org/~chewi/distfiles/ffmpeg-rpi-$VERSION.patch
+curl --location --remote-name --skip-existing https://ffmpeg.org/releases/ffmpeg-$VERSION.tar.xz
+
 xz -cd ffmpeg-$VERSION.tar.xz | tar -x
 cd ffmpeg-$VERSION
 
@@ -43,5 +55,5 @@ rm -rf "$DESTDIR/usr/share/ffmpeg/examples"
 
 su
 chown -R root:root $DESTDIR
-tar -c $DESTDIR/* | gzip2 > ffmpeg@$VERSION.tar.gz
+tar -c -C $DESTDIR . | gzip2 > ../ffmpeg@$VERSION.tar.gz
 exit

@@ -1,5 +1,16 @@
 #!/bin/sh -e
 
+PRETTY_NAME=linux
+MAJOR=6
+MINOR=13
+PATCH=3
+VERSION=6.13.3
+
+mkdir temporary-builddir
+DESTDIR=temporary-builddir
+
+curl --location --remote-name --skip-existing https://mirrors.edge.kernel.org/pub/linux/kernel/v.x/linux-$VERSION.tar.xz
+
 xz -cd linux-$VERSION.tar.xz | tar -x
 cd linux-$VERSION
 
@@ -17,5 +28,5 @@ install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
 
 su
 chown -R root:root $DESTDIR
-tar -c $DESTDIR/* | gzip2 > linux@$VERSION.tar.gz
+tar -c -C $DESTDIR . | gzip2 > ../linux@$VERSION.tar.gz
 exit
