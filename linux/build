@@ -26,7 +26,5 @@ cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
 
 install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
 
-su
-chown -R root:root $DESTDIR
-tar -zcC $DESTDIR . | gzip > ../linux@$VERSION.tar.gz
-exit
+doas chown -R root:root $DESTDIR
+doas sh -c "tar -zcC $DESTDIR . | gzip > ../linux@$VERSION.tar.gz"

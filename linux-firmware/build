@@ -19,7 +19,5 @@ install -Dm644 rkwifibt.git/firmware/broadcom/AP6256/wifi/nvram_ap6256.txt "$DES
 sed -i 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcmfmac43456-sdio.txt"
 ln -sf brcmfmac43456-sdio.txt "$DESTDIR/usr/lib/firmware/brcmfmac43456-sdio.pinebook-pro.txt"
 
-su
-chown -R root:root $DESTDIR
-tar -zcC $DESTDIR . | gzip > ../linux-firmware@$VERSION.tar.gz
-exit
+doas chown -R root:root $DESTDIR
+doas sh -c "tar -zcC $DESTDIR . | gzip > ../linux-firmware@$VERSION.tar.gz"
