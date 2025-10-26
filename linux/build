@@ -15,14 +15,19 @@ xz -cd linux-$VERSION.tar.xz | tar -x
 cd linux-$VERSION
 
 mv ../pinebook-pro-config .config
-
 make oldconfig
-make Image
-make dtbs
 
-make dtbs_install INSTALL_DTBS_PATH="$DESTDIR/boot/dtbs"
-# make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR modules_install
+make Image
 cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
+
+make dtbs
+make INSTALL_DTBS_PATH="$DESTDIR/boot/dtbs" dtbs_install
+
+if [ $(grep -w 'CONFIG_MODULES' .config) == "CONFIG_MODULES=y" ]
+then
+	make modules
+	make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR modules_install
+fi
 
 install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
 
