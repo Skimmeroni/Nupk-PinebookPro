@@ -9,15 +9,23 @@ VERSION=git
 mkdir temporary-builddir
 DESTDIR="$PWD/temporary-builddir"
 
-git clone https://gitlab.manjaro.org/manjaro-arm/packages/community/ap6256-firmware.git
-git clone https://github.com/Caesar-github/rkwifibt.git
+git clone https://github.com/armbian/firmware.git
 
-install -Dm644 ap6256-firmware/brcmfmac43456-sdio.clm_blob "$DESTDIR/usr/lib/firmware/brcmfmac43456-sdio.clm_blob"
-install -Dm644 rkwifibt/firmware/broadcom/AP6256/bt/BCM4345C5.hcd "$DESTDIR/usr/lib/firmware/BCM4345C5.hcd"
-install -Dm644 rkwifibt/firmware/broadcom/AP6256/wifi/fw_bcm43456c5_ag.bin "$DESTDIR/usr/lib/firmware/brcmfmac43456-sdio.bin"
-install -Dm644 rkwifibt/firmware/broadcom/AP6256/wifi/nvram_ap6256.txt "$DESTDIR/usr/lib/firmware/brcmfmac43456-sdio.txt"
-sed -i 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcmfmac43456-sdio.txt"
-ln -sf brcmfmac43456-sdio.txt "$DESTDIR/usr/lib/firmware/brcmfmac43456-sdio.pinebook-pro.txt"
+# As I understand it, different batches of PBs have slightly different
+# chipsets, using different firmwares. These two flavours are those that
+# I am aware of
+
+install -Dm644 firmware/brcm/brcmfmac43455-sdio.bin      "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43455-sdio.bin"
+install -Dm644 firmware/brcm/brcmfmac43455-sdio.clm_blob "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43455-sdio.clm_blob"
+install -Dm644 firmware/brcm/brcmfmac43455-sdio.txt      "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43455-sdio.txt"
+install -Dm644 firmware/BCM4345C0.hcd                    "$DESTDIR/usr/lib/firmware/brcm/BCM4345C0.hcd"
+sed -i 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43455-sdio.txt"
+
+install -Dm644 firmware/brcm/brcmfmac43456-sdio.bin      "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.bin"
+install -Dm644 firmware/brcm/brcmfmac43456-sdio.clm_blob "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.clm_blob"
+install -Dm644 firmware/brcm/brcmfmac43456-sdio.txt      "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
+install -Dm644 firmware/BCM4345C5.hcd                    "$DESTDIR/usr/lib/firmware/brcm/BCM4345C5.hcd"
+sed -i 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
 
 doas chown -R root:root $DESTDIR
 doas sh -c "tar -zcC $DESTDIR . | gzip > ../linux-firmware@$VERSION.tar.gz"
