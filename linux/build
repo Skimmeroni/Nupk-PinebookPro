@@ -2,9 +2,9 @@
 
 PRETTY_NAME=linux
 MAJOR=6
-MINOR=13
-PATCH=3
-VERSION=6.13.3
+MINOR=14
+PATCH=1
+VERSION=6.14.1
 
 mkdir temporary-builddir
 DESTDIR="$PWD/temporary-builddir"
@@ -15,21 +15,20 @@ xz -cd linux-$VERSION.tar.xz | tar -x
 cd linux-$VERSION
 
 mv ../pinebook-pro-config .config
-make oldconfig
+make olddefconfig
 
 make Image
-cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
-
 make dtbs
+
+install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
+cp arch/arm64/boot/Image "$DESTDIR/boot/Image"
 make INSTALL_DTBS_PATH="$DESTDIR/boot/dtbs" dtbs_install
 
 if [ $(grep -w 'CONFIG_MODULES' .config) == "CONFIG_MODULES=y" ]
 then
 	make modules
-	make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR modules_install
+	make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR/usr modules_install
 fi
-
-install -Dm644 ../extlinux.conf "$DESTDIR/boot/extlinux/extlinux.conf"
 
 doas chown -R root:root $DESTDIR
 doas sh -c "tar -zcC $DESTDIR . | gzip > ../linux@$VERSION.tar.gz"
