@@ -8,8 +8,8 @@ VERSION=20.1.8
 
 if [ ! -f $0 ]; then return; fi
 
-mkdir temporary-distdir
-DESTDIR="$PWD/temporary-distdir"
+mkdir temporary-destdir
+DESTDIR="$PWD/temporary-destdir"
 
 curl --location --remote-name --skip-existing https://github.com/llvm/llvm-project/releases/download/llvmorg-$VERSION/libclc-$VERSION.src.tar.xz
 curl --location --remote-name --skip-existing https://github.com/llvm/llvm-project/releases/download/llvmorg-$VERSION/cmake-$VERSION.src.tar.xz

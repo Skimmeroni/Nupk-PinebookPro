@@ -6,8 +6,10 @@ MINOR=1
 PATCH=
 VERSION=6.1
 
-mkdir temporary-builddir
-DESTDIR="$PWD/temporary-builddir"
+if [ ! -f $0 ]; then return; fi
+
+mkdir temporary-destdir
+DESTDIR="$PWD/temporary-destdir"
 
 curl --location --remote-name --skip-existing https://dev.gentoo.org/~chewi/distfiles/ffmpeg-rpi-$VERSION.patch
 curl --location --remote-name --skip-existing https://ffmpeg.org/releases/ffmpeg-$VERSION.tar.xz
@@ -55,3 +57,6 @@ rm -rf "$DESTDIR/usr/share/ffmpeg/examples"
 
 doas chown -R root:root $DESTDIR
 doas sh -c "tar -zcC $DESTDIR . | gzip > ../ffmpeg@$VERSION.tar.gz"
+CALLER_UID=$(id -un)
+CALLER_GID=$(id -gn)
+doas chown -R $CALLER_UID:$CALLER_GID $DESTDIR

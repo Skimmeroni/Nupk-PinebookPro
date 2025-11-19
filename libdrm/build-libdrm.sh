@@ -6,8 +6,10 @@ MINOR=4
 PATCH=128
 VERSION=2.4.128
 
-mkdir temporary-builddir
-DESTDIR="$PWD/temporary-builddir"
+if [ ! -f $0 ]; then return; fi
+
+mkdir temporary-destdir
+DESTDIR="$PWD/temporary-destdir"
 
 curl --location --remote-name --skip-existing https://dri.freedesktop.org/libdrm/libdrm-$VERSION.tar.xz
 
@@ -44,3 +46,6 @@ find "$DESTDIR/usr/lib" -type f -name '*.so*' -exec strip --strip-unneeded {} \;
 
 doas chown -R root:root $DESTDIR
 doas sh -c "tar -zcC $DESTDIR . | gzip > ../libdrm@$VERSION.tar.gz"
+CALLER_UID=$(id -un)
+CALLER_GID=$(id -gn)
+doas chown -R $CALLER_UID:$CALLER_GID $DESTDIR
