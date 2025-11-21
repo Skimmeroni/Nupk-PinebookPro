@@ -16,14 +16,14 @@ curl --location --remote-name --skip-existing https://archive.mesa3d.org/mesa-$V
 xz -cd mesa-$VERSION.tar.xz | tar -x
 cd mesa-$VERSION
 
-patch -p1 < ../bypass-failing-check-for-muon.patch
-sed '/rust_std=2021/d' meson.build > meson.build.new
-mv meson.build.new meson.build
+# Mesa is, as of now, a project too complex for muon to handle.
+# To be fair, to build mesa you need Python anyway...
 
-# TODO: precomp-compiler?
-# TODO: rust?
+# default_library=both doesn't do anything
 
-muon setup \
+# Vulkan is disabled until Panfrost supports it on the Pinebook Pro
+# (if it ever will)
+meson setup \
 	-D prefix=/usr \
 	-D buildtype=release \
 	-D default_library=both \
@@ -31,7 +31,6 @@ muon setup \
 	-D egl-native-platform=wayland \
 	-D expat=enabled \
 	-D gallium-drivers=panfrost \
-	-D gallium-va=enabled \
 	-D vulkan-drivers='' \
 	-D gles1=enabled \
 	-D gles2=enabled \
@@ -47,13 +46,16 @@ muon setup \
 	-D tools='' \
 	-D zstd=disabled \
 	-D zlib=enabled \
-	-D video-codecs=all_free \
+	-D video-codecs=all \
 	-D mesa-clc=enabled \
 	-D precomp-compiler=enabled \
 	build
 
-ninja -C build
-muon -C build install -d "$DESTDIR"
+meson compile -C build
+meson install -C build --destdir "$DESTDIR"
+
+find $DESTDIR -name '*.a'   -type f -exec strip --strip-unneeded {} \;
+find $DESTDIR -name '*.so*' -type f -exec strip --strip-unneeded {} \;
 
 doas chown -R root:root $DESTDIR
 doas sh -c "tar -zcC $DESTDIR . | gzip > ../mesa@$VERSION.tar.gz"
