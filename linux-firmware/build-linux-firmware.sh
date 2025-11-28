@@ -6,10 +6,8 @@ MINOR=
 PATCH=
 VERSION=git
 
-if [ ! -f $0 ]; then return; fi
-
-mkdir temporary-destdir
 DESTDIR="$PWD/temporary-destdir"
+[ -d $DESTDIR ] || mkdir temporary-destdir
 
 git clone https://github.com/armbian/firmware.git
 
@@ -28,11 +26,11 @@ install -Dm644 firmware/brcm/brcmfmac43456-sdio.bin      "$DESTDIR/usr/lib/firmw
 install -Dm644 firmware/brcm/brcmfmac43456-sdio.clm_blob "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.clm_blob"
 install -Dm644 firmware/brcm/brcmfmac43456-sdio.txt      "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
 install -Dm644 firmware/BCM4345C5.hcd                    "$DESTDIR/usr/lib/firmware/brcm/BCM4345C5.hcd"
-sed -i 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt" > "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt.new"
+sed 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt" > "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt.new"
 mv "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt.new" "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../linux-firmware@$VERSION.tar.gz"
+doas sh -c "tar -zcC $DESTDIR . | gzip > ../System-linux-firmware@$VERSION.tar.gz"
 CALLER_UID=$(id -un)
 CALLER_GID=$(id -gn)
-doas chown -R $CALLER_UID:$CALLER_GID $DESTDIR
+doas rm -rf $DESTDIR

@@ -6,8 +6,6 @@ MINOR=2
 PATCH=5
 VERSION=25.2.5
 
-if [ ! -f $0 ]; then return; fi
-
 mkdir temporary-builddir
 DESTDIR="$PWD/temporary-builddir"
 
@@ -58,7 +56,5 @@ find $DESTDIR -name '*.a'   -type f -exec strip --strip-unneeded {} \;
 find $DESTDIR -name '*.so*' -type f -exec strip --strip-unneeded {} \;
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../mesa@$VERSION.tar.gz"
-CALLER_UID=$(id -un)
-CALLER_GID=$(id -gn)
-doas chown -R $CALLER_UID:$CALLER_GID $DESTDIR
+doas sh -c "tar -zcC $DESTDIR . | gzip > ../Wayland-mesa@$VERSION.tar.gz"
+doas rm -rf $DESTDIR

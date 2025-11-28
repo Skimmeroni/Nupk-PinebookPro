@@ -6,8 +6,6 @@ MINOR=4
 PATCH=128
 VERSION=2.4.128
 
-if [ ! -f $0 ]; then return; fi
-
 mkdir temporary-destdir
 DESTDIR="$PWD/temporary-destdir"
 
@@ -45,7 +43,5 @@ find "$DESTDIR/usr/lib" -type f -name '*.a'   -exec strip --strip-unneeded {} \;
 find "$DESTDIR/usr/lib" -type f -name '*.so*' -exec strip --strip-unneeded {} \;
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../libdrm@$VERSION.tar.gz"
-CALLER_UID=$(id -un)
-CALLER_GID=$(id -gn)
-doas chown -R $CALLER_UID:$CALLER_GID $DESTDIR
+doas sh -c "tar -zcC $DESTDIR . | gzip > ../Wayland-libdrm@$VERSION.tar.gz"
+doas rm -rf $DESTDIR
