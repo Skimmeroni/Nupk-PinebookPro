@@ -1,15 +1,13 @@
 #!/bin/sh -e
 
 PRETTY_NAME=ffmpeg
-MAJOR=6
+MAJOR=7
 MINOR=1
-PATCH=
-VERSION=6.1
+PATCH=1
+VERSION=7.1.1
 
-if [ ! -f $0 ]; then return; fi
-
-mkdir temporary-destdir
 DESTDIR="$PWD/temporary-destdir"
+[ -d $DESTDIR ] || mkdir temporary-destdir
 
 curl --location --remote-name --skip-existing https://dev.gentoo.org/~chewi/distfiles/ffmpeg-rpi-$VERSION.patch
 curl --location --remote-name --skip-existing https://ffmpeg.org/releases/ffmpeg-$VERSION.tar.xz
@@ -17,46 +15,48 @@ curl --location --remote-name --skip-existing https://ffmpeg.org/releases/ffmpeg
 xz -cd ffmpeg-$VERSION.tar.xz | tar -x
 cd ffmpeg-$VERSION
 
+# See the way Gentoo handles this
 patch -p1 < ../ffmpeg-rpi-$VERSION.patch
 
 ./configure \
 	--prefix=/usr \
-	--disable-bzlib \
 	--disable-debug \
-	--disable-libass \
+	--disable-epoxy \
 	--disable-libwebp \
 	--disable-libxcb \
-	--disable-libxcb-shm \
-	--disable-libxcb-xfixes \
-	--disable-libxcb-shape \
 	--disable-libxml2 \
-	--disable-libxvid \
 	--disable-lzma \
 	--disable-network \
-	--disable-nonfree \
 	--disable-openssl \
+	--disable-bzlib \
 	--disable-xlib \
 	--disable-zlib \
+	--disable-sdl2 \
+	--enable-shared \
+	--enable-static \
+	--enable-stripping \
+	--enable-optimizations \
 	--enable-alsa \
 	--enable-gpl \
+	--enable-libass \
 	--enable-libdrm \
 	--enable-libmp3lame \
 	--enable-libopus \
 	--enable-libvpx \
 	--enable-libvorbis \
-	--enable-sdl2 \
-	--enable-shared \
-	--enable-stripping \
+	--enable-libxvid \
 	--enable-libx264 \
-	--enable-libx265
+	--enable-libx265 \
+	--enable-libudev \
+	--enable-sand \
+	--enable-v4l2-request \
+	--enable-nonfree
 
 make
-make DESTDIR=$DESTDIR install-strip
+make DESTDIR=$DESTDIR install
 
 rm -rf "$DESTDIR/usr/share/ffmpeg/examples"
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../ffmpeg@$VERSION.tar.gz"
-CALLER_UID=$(id -un)
-CALLER_GID=$(id -gn)
-doas chown -R $CALLER_UID:$CALLER_GID $DESTDIR
+doas sh -c "tar -zcC $DESTDIR . | gzip > ../Media-ffmpeg@$VERSION.tar.gz"
+doas rm -rf $DESTDIR
