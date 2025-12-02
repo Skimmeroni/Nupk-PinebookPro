@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -eu
 
 PRETTY_NAME=mesa
 MAJOR=25
@@ -6,8 +8,8 @@ MINOR=2
 PATCH=5
 VERSION=25.2.5
 
-mkdir temporary-builddir
-DESTDIR="$PWD/temporary-builddir"
+DESTDIR="$PWD/temporary-destdir"
+[ -d $DESTDIR ] || mkdir -p $DESTDIR
 
 curl --location --remote-name --skip-existing https://archive.mesa3d.org/mesa-$VERSION.tar.xz
 
@@ -56,5 +58,6 @@ find $DESTDIR -name '*.a'   -type f -exec strip --strip-unneeded {} \;
 find $DESTDIR -name '*.so*' -type f -exec strip --strip-unneeded {} \;
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../Wayland-mesa@$VERSION.tar.gz"
+cd $DESTDIR
+doas sh -c "tar -cf - * | gzip > ../Wayland-mesa@$VERSION.tar.gz"
 doas rm -rf $DESTDIR

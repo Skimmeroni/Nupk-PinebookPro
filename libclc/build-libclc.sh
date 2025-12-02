@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -eu
 
 PRETTY_NAME=llvm
 MAJOR=20
@@ -6,8 +8,8 @@ MINOR=1
 PATCH=8
 VERSION=20.1.8
 
-mkdir temporary-destdir
 DESTDIR="$PWD/temporary-destdir"
+[ -d $DESTDIR ] || mkdir -p $DESTDIR
 
 curl --location --remote-name --skip-existing https://github.com/llvm/llvm-project/releases/download/llvmorg-$VERSION/libclc-$VERSION.src.tar.xz
 curl --location --remote-name --skip-existing https://github.com/llvm/llvm-project/releases/download/llvmorg-$VERSION/cmake-$VERSION.src.tar.xz
@@ -36,5 +38,6 @@ cmake --build build
 DESTDIR=$DESTDIR cmake --install build --strip
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../Devel-libclc@$VERSION.tar.gz"
+cd $DESTDIR
+doas sh -c "tar -cf - * | gzip > ../Devel-libclc@$VERSION.tar.gz"
 doas rm -rf $DESTDIR

@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -eu
 
 PRETTY_NAME=linux-firmware
 MAJOR=
@@ -7,7 +9,7 @@ PATCH=
 VERSION=git
 
 DESTDIR="$PWD/temporary-destdir"
-[ -d $DESTDIR ] || mkdir temporary-destdir
+[ -d $DESTDIR ] || mkdir -p $DESTDIR
 
 git clone https://github.com/armbian/firmware.git
 
@@ -30,7 +32,6 @@ sed 's/ccode=DE/ccode=all/' "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.t
 mv "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt.new" "$DESTDIR/usr/lib/firmware/brcm/brcmfmac43456-sdio.txt"
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../System-linux-firmware@$VERSION.tar.gz"
-CALLER_UID=$(id -un)
-CALLER_GID=$(id -gn)
+cd $DESTDIR
+doas sh -c "tar -cf - * | gzip > ../System-linux-firmware@$VERSION.tar.gz"
 doas rm -rf $DESTDIR

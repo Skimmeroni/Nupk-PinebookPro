@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -eu
 
 PRETTY_NAME=ffmpeg
 MAJOR=7
@@ -7,7 +9,7 @@ PATCH=1
 VERSION=7.1.1
 
 DESTDIR="$PWD/temporary-destdir"
-[ -d $DESTDIR ] || mkdir temporary-destdir
+[ -d $DESTDIR ] || mkdir -p $DESTDIR
 
 curl --location --remote-name --skip-existing https://dev.gentoo.org/~chewi/distfiles/ffmpeg-rpi-$VERSION.patch
 curl --location --remote-name --skip-existing https://ffmpeg.org/releases/ffmpeg-$VERSION.tar.xz
@@ -58,5 +60,6 @@ make DESTDIR=$DESTDIR install
 rm -rf "$DESTDIR/usr/share/ffmpeg/examples"
 
 doas chown -R root:root $DESTDIR
-doas sh -c "tar -zcC $DESTDIR . | gzip > ../Media-ffmpeg@$VERSION.tar.gz"
+cd $DESTDIR
+doas sh -c "tar -cf - * | gzip > ../Media-ffmpeg@$VERSION.tar.gz"
 doas rm -rf $DESTDIR
