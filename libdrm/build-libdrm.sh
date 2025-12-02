@@ -5,8 +5,8 @@ set -eu
 PRETTY_NAME=libdrm
 MAJOR=2
 MINOR=4
-PATCH=128
-VERSION=2.4.128
+PATCH=129
+VERSION=2.4.129
 
 DESTDIR="$PWD/temporary-destdir"
 [ -d $DESTDIR ] || mkdir -p $DESTDIR
