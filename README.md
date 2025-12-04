@@ -1,11 +1,18 @@
 # Nupk-PinebookPro
-Packages and resources tailored for the Pinebook Pro
-For some compiler-related flags, try this: 
+Packages and resources tailored for the Pinebook Pro.
+The CFLAGS and CXXFLAGS specific for the PBP architecture are as follows:
 
 ```
-export CFLAGS="-O2 -march=armv8-a -mtune=cortex-a72.cortex-a53"
+export CFLAGS="-march=armv8-a -mtune=cortex-a72.cortex-a53"
 export CXXFLAGS="$CFLAGS"
-export FFLAGS="$CFLAGS"
-export LDFLAGS="-Wl, --as-needed"
+```
+
+Since the PBP has 6 cores, it is possible to set:
+
+```
 export MAKEFLAGS="-j6"
 ```
+
+However, having only (!) 4 GBs of RAM, using all cores can quickly saturate
+the available memory, especially for big projects. Remember to lower the
+number of parallel jobs where needed.
