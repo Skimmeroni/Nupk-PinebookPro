@@ -16,17 +16,14 @@ curl --location --remote-name --skip-existing https://archive.mesa3d.org/mesa-$V
 xz -cd mesa-$VERSION.tar.xz | tar -x
 cd mesa-$VERSION
 
-# Mesa is, as of now, a project too complex for muon to handle.
-# To be fair, to build mesa you need Python anyway...
-
-# default_library=both doesn't do anything
-
 # Vulkan is disabled until Panfrost supports it on the Pinebook Pro
 # (if it ever will)
+# default_library=both doesn't do anything
 meson setup \
 	-D prefix=/usr \
 	-D buildtype=release \
 	-D default_library=both \
+	-D strip=true \
 	-D platforms=wayland \
 	-D egl-native-platform=wayland \
 	-D expat=enabled \
@@ -52,10 +49,7 @@ meson setup \
 	build
 
 meson compile -C build
-meson install -C build --destdir "$DESTDIR"
-
-find $DESTDIR -name '*.a'   -type f -exec strip --strip-unneeded {} \;
-find $DESTDIR -name '*.so*' -type f -exec strip --strip-unneeded {} \;
+meson install -C build --destdir $DESTDIR
 
 doas chown -R root:root $DESTDIR
 cd $DESTDIR

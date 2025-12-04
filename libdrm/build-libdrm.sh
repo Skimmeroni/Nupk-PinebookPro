@@ -16,11 +16,12 @@ curl --location --remote-name --skip-existing https://dri.freedesktop.org/libdrm
 xz -cd libdrm-$VERSION.tar.xz | tar -x
 cd libdrm-$VERSION
 
-muon setup \
+meson setup \
 	-D prefix=/usr \
 	-D libdir=/usr/lib \
 	-D buildtype=release \
 	-D default_library=both \
+	-D strip=true \
 	-D udev=false \
 	-D cairo-tests=disabled \
 	-D tests=false \
@@ -38,11 +39,8 @@ muon setup \
 	-D etnaviv=disabled \
 	build
 
-ninja -C build
-muon -C build install -d "$DESTDIR"
-
-find "$DESTDIR/usr/lib" -type f -name '*.a'   -exec strip --strip-unneeded {} \;
-find "$DESTDIR/usr/lib" -type f -name '*.so*' -exec strip --strip-unneeded {} \;
+meson compile -C build
+meson install -C build --destdir $DESTDIR
 
 doas chown -R root:root $DESTDIR
 cd $DESTDIR
