@@ -30,6 +30,8 @@ if [ $(grep -w 'CONFIG_MODULES' .config) == "CONFIG_MODULES=y" ]
 then
 	make modules
 	make INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$DESTDIR/usr modules_install
+	# Dangling symlink?
+	unlink "$DESTDIR/usr/lib/modules/$VERSION-ARCH/build"
 fi
 
 doas chown -R root:root $DESTDIR
