@@ -40,8 +40,10 @@ patch -p1 < ../ffmpeg-rpi-$VERSION.patch
 	--enable-optimizations \
 	--enable-alsa \
 	--enable-gpl \
+	--enable-libaom \
 	--enable-libass \
 	--enable-libdrm \
+	--enable-libdav1d \
 	--enable-libmp3lame \
 	--enable-libopus \
 	--enable-libvpx \
