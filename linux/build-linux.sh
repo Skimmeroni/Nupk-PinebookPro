@@ -4,9 +4,9 @@ set -eu
 
 PRETTY_NAME=linux
 MAJOR=6
-MINOR=16
-PATCH=1
-VERSION=6.16.1
+MINOR=17
+PATCH=6
+VERSION=6.17.6
 
 DESTDIR="$PWD/temporary-destdir"
 [ -d $DESTDIR ] || mkdir -p $DESTDIR
